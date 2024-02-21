@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý sinh viên</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 8px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #007bff;
+      color: #fff;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>Quản lý sinh viên</h1>
+
+    <div style="text-align: center;">
+        <button onclick="nhapSoLuongSV()">Nhập số lượng sinh viên</button>
+        <button onclick="hienThiThongTinSV()">Hiển thị thông tin sinh viên</button>
+      </div>
+      
+
+    <div id="inputForm" style="display: none;">
+      <h2>Nhập thông tin sinh viên</h2>
+      <label for="maSV">Mã sinh viên:</label>
+      <input type="text" id="maSV"><br><br>
+      
+      <label for="hoTen">Họ và tên:</label>
+      <input type="text" id="hoTen"><br><br>
+      
+      <label for="ngaySinh">Ngày sinh:</label>
+      <input type="text" id="ngaySinh"><br><br>
+      
+      <label for="lopHoc">Lớp học:</label>
+      <input type="text" id="lopHoc"><br><br>
+      
+      <label for="diemGPA">Điểm GPA:</label>
+      <input type="text" id="diemGPA"><br><br>
+      
+      <div style="text-align: center;">
+        <button onclick="themSinhVien()">Thêm sinh viên</button>
+        <button onclick="capNhatThongTinSV()">Lưu thông tin</button>
+      </div>
+
+    <div id="outputDiv" style="display: none;">
+      <h2>Thông tin sinh viên</h2>
+      <table id="sinhVienTable">
+        <tr>
+          <th>Mã SV</th>
+          <th>Họ và tên</th>
+          <th>Ngày sinh</th>
+          <th>Lớp học</th>
+          <th>Điểm GPA</th>
+          <th>Chỉnh sửa</th> 
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    var soLuongSV = 0;
+    var danhSachSV = [];
+
+    function nhapSoLuongSV() {
+      soLuongSV = parseInt(prompt("Nhập số lượng sinh viên:"));
+      document.getElementById("inputForm").style.display = "block";
+    }
+
+    function hienThiThongTinSV() {
+      document.getElementById("outputDiv").style.display = "block";
+      var table = document.getElementById("sinhVienTable");
+
+      // Xóa dữ liệu cũ
+      while (table.rows.length > 1) {
+        table.deleteRow(1);
+      }
+
+      // Hiển thị thông tin sinh viên
+      for (var i = 0; i < danhSachSV.length; i++) {
+        var sinhVien = danhSachSV[i];
+        var row = table.insertRow();
+        row.insertCell().innerHTML = sinhVien.maSV;
+        row.insertCell().innerHTML = sinhVien.hoTen;
+        row.insertCell().innerHTML = sinhVien.ngaySinh;
+        row.insertCell().innerHTML = sinhVien.lopHoc;
+        row.insertCell().innerHTML = sinhVien.diemGPA;
+        
+        // Tạo button chỉnh sửa
+        var editButton = document.createElement("button");
+        editButton.innerHTML = "Chỉnh sửa";
+        editButton.onclick = function() {
+          hienThongTinChinhSua(sinhVien);
+        };
+        row.insertCell().appendChild(editButton);
+      }
+    }
+
+    // Hiển thị thông tin để chỉnh sửa
+    function hienThongTinChinhSua(sinhVien) {
+      document.getElementById("maSV").value = sinhVien.maSV;
+      document.getElementById("hoTen").value = sinhVien.hoTen;
+      document.getElementById("ngaySinh").value = sinhVien.ngaySinh;
+      document.getElementById("lopHoc").value = sinhVien.lopHoc;
+      document.getElementById("diemGPA").value = sinhVien.diemGPA;
+    }
+
+    function themSinhVien() {
+      var maSV = document.getElementById("maSV").value;
+      var hoTen = document.getElementById("hoTen").value;
+      var ngaySinh = document.getElementById("ngaySinh").value;
+      var lopHoc = document.getElementById("lopHoc").value;
+      var diemGPA = document.getElementById("diemGPA").value;
+
+      var sinhVien = {
+        maSV: maSV,
+        hoTen: hoTen,
+        ngaySinh: ngaySinh,
+        lopHoc: lopHoc,
+        diemGPA: diemGPA
+      };
+
+      danhSachSV.push(sinhVien);
+
+      // Xoá data đã nhập
+      document.getElementById("maSV").value = "";
+      document.getElementById("hoTen").value = "";
+      document.getElementById("ngaySinh").value = "";
+      document.getElementById("lopHoc").value = "";
+      document.getElementById("diemGPA").value = "";
+
+      alert("Thêm sinh viên thành công!");
+    }
+
+    function capNhatThongTinSV() {
+      var maSV = document.getElementById("maSV").value;
+      var hoTen = document.getElementById("hoTen").value;
+      var ngaySinh = document.getElementById("ngaySinh").value;
+      var lopHoc = document.getElementById("lopHoc").value;
+      var diemGPA = document.getElementById("diemGPA").value;
+
+      // Tìm và cập nhật thông tin sinh viên trong danh sách
+      for (var i = 0; i < danhSachSV.length; i++) {
+        if (danhSachSV[i].maSV === maSV) {
+          danhSachSV[i].hoTen = hoTen;
+          danhSachSV[i].ngaySinh = ngaySinh;
+          danhSachSV[i].lopHoc = lopHoc;
+          danhSachSV[i].diemGPA = diemGPA;
+          break;
+        }
+      }
+
+      // Xóa dữ liệu đã nhập
+      document.getElementById("maSV").value = "";
+      document.getElementById("hoTen").value = "";
+      document.getElementById("ngaySinh").value = "";
+      document.getElementById("lopHoc").value = "";
+      document.getElementById("diemGPA").value = "";
+
+      alert("Cập nhật thông tin sinh viên thành công!");
+    }
+  </script>
+</body>
+</html>
